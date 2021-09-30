@@ -79,7 +79,7 @@ module VagrantPlugins
           env[:metrics]["instance_ready_time"] = Util::Timer.time do
             tries = @provider_config.instance_ready_timeout / 2
 
-            env[:ui].info(I18n.t("vagrant_qemu.waiting_for_ready"))
+            env[:ui].info("vagrant_qemu.waiting_for_ready")
             begin
               retryable(:on => Qemu::Errors::TimeoutError, :tries => tries) do
                 # If we're interrupted don't worry about waiting
@@ -103,7 +103,7 @@ module VagrantPlugins
           if !env[:interrupted]
             env[:metrics]["instance_ssh_time"] = Util::Timer.time do
               # Wait for SSH to be ready.
-              env[:ui].info(I18n.t("vagrant_qemu.waiting_for_ssh"))
+              env[:ui].info("vagrant_qemu.waiting_for_ssh")
               while true
                 # If we're interrupted then just back out
                 break if env[:interrupted]
