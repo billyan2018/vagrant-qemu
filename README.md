@@ -16,6 +16,10 @@ to enable graphical acceleration:
 ```
 brew install knazarov/qemu-virgl/qemu-virgl
 ```
+You may also need to install `libvirt`:
+```shell
+brew install libiconv gcc libvirt
+```
 If `vagrant` is not installed yet, you should [install it](https://www.vagrantup.com)
 
 ## Build and install
