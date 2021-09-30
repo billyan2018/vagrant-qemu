@@ -28,7 +28,7 @@ module VagrantPlugins
         provider(nm_provider) do
           # Setup logging and i18n
           setup_logging
-          # setup_i18n
+          setup_i18n
 
           # Return the provider
           require_relative "provider"
@@ -37,12 +37,12 @@ module VagrantPlugins
       end
 
       make_provider(:qemu)
-
+      make_provider("libvirt")
       # This initializes the internationalization strings.
-      ## def self.setup_i18n
-      #   I18n.load_path << File.expand_path("locales/en.yml", Qemu.source_root)
-      #  I18n.reload!
-      ## end
+      def self.setup_i18n
+         I18n.load_path << File.expand_path("locales/en.yml", Qemu.source_root)
+         I18n.reload!
+      end
 
       # This sets up our log level to be whatever VAGRANT_LOG is.
       def self.setup_logging

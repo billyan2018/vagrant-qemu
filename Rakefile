@@ -17,4 +17,4 @@ Bundler::GemHelper.install_tasks
 # Install the `spec` task so that we can run tests.
 
 # Default task is to run the unit tests
-task :default => :spec
+## task :default => :spec

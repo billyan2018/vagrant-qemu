@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vagrant-qemu (0.2.21)
+    vagrant-qemu (0.2.22)
 
 GEM
   remote: https://rubygems.org/

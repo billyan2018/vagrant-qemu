@@ -3,10 +3,15 @@ require "vagrant"
 module VagrantPlugins
   module Qemu
     class Config < Vagrant.plugin("2", :config)
-      # The ID of the disk_file to use.
+      # The disk_file to use.
       #
       # @return [String]
       attr_accessor :disk_file
+
+      # The firmware to use.
+      #
+      # @return [String]
+      attr_accessor :firmware_location
 
       # The timeout to wait for an instance to become ready.
       #
@@ -29,7 +34,8 @@ module VagrantPlugins
       attr_accessor :run_args
 
       def initialize
-        @disk_file                 = UNSET_VALUE
+        @disk_file              = UNSET_VALUE
+        @firmware_location      = UNSET_VALUE
         @instance_ready_timeout = UNSET_VALUE
         @user_data              = UNSET_VALUE
         @script                 = UNSET_VALUE
@@ -52,6 +58,8 @@ module VagrantPlugins
       def finalize!
         # disk_filemust be nil, since we can't default that
         @disk_file= nil if @disk_file== UNSET_VALUE
+
+        @firmware_location= nil if @firmware_location == UNSET_VALUE
 
         # Set the default timeout for waiting for an instance to be ready
         @instance_ready_timeout = 120 if @instance_ready_timeout == UNSET_VALUE

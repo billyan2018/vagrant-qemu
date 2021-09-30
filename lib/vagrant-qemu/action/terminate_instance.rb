@@ -12,10 +12,11 @@ module VagrantPlugins
 
         def call(env)
           # Destroy the server and remove the tracking ID
+          pid = env[:machine].id
           env[:ui].info(I18n.t("vagrant_qemu.terminating"))
-          output = %x{ #{env[:machine].provider_config.script} terminate-instance #{env[:machine].id}}
+          output = %x{ kill -9 #{pid} }
           if $?.to_i > 0
-            raise Errors::QemuError, :message => "Failure: #{env[:machine].provider_config.script} terminate-instance #{env[:machine].id}"
+            raise Errors::QemuError, :message => "Failure: terminate-instance #{env[:machine].id}"
           end
 
           puts output

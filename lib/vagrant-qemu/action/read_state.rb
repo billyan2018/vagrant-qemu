@@ -1,5 +1,5 @@
 require "log4r"
-
+require "json"
 module VagrantPlugins
   module Qemu
     module Action
@@ -9,23 +9,29 @@ module VagrantPlugins
         def initialize(app, env)
           @app    = app
           @logger = Log4r::Logger.new("vagrant_qemu::action::read_state")
+          @env
         end
 
         def call(env)
-          env[:machine_state_id] = read_state(env[:machine])
+          env[:machine_state_id] = read_state(env)
 
           @app.call(env)
         end
 
-        def read_state(machine)
-          return :not_created if machine.id.nil?
-
-          # Return the state
-          output = %x{ #{machine.provider_config.script} read-state #{machine.id} }
-          if $?.to_i > 0
-            raise Errors::QemuError, :message => "Failure: #{env[:machine].provider_config.script} read-state #{machine.id}"
+        def read_state(env)
+          machine = env[:machine]
+          pid = machine.id
+          env[:ui].info("======= #{pid}")
+          if pid.nil? || !(pid.is_a? Numeric)
+            :not_created
+          else
+            begin
+              Process.getpgid( pid )
+              :created
+            rescue Errno::ESRCH
+              :not_created
+            end
           end
-          output.strip
         end
       end
     end

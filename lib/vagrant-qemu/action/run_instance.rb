@@ -21,10 +21,13 @@ module VagrantPlugins
         end
 
         def firmware_location
-          "/opt/homebrew/share/qemu"
+          @provider_config.firmware_location || "/opt/homebrew/share/qemu"
         end
 
         def prepare_shell_command(env)
+
+          firmware_path = firmware_location
+          env[:ui].info("==Firmware: #{firmware_path}")
           disk_file_location = self.disk_file
           env[:ui].info("==Disk: #{disk_file_location}")
           %{
@@ -39,8 +42,8 @@ module VagrantPlugins
          -display cocoa,gl=es \
 		     -device e1000,netdev=net0 \
 		     -netdev user,id=net0 \
-         -drive "if=pflash,format=raw,file=#{firmware_location}/edk2-aarch64-code.fd,readonly=on" \
-         -drive "if=pflash,format=raw,file=#{firmware_location}/edk2-arm-vars.fd,discard=on" \
+         -drive "if=pflash,format=raw,file=#{firmware_path}/edk2-aarch64-code.fd,readonly=on" \
+         -drive "if=pflash,format=raw,file=#{firmware_path}/edk2-arm-vars.fd,discard=on" \
          -drive "if=virtio,format=qcow2,file=#{disk_file_location},discard=on" \
 		     -chardev qemu-vdagent,id=spice,name=vdagent,clipboard=on \
 		     -device virtio-serial-pci \
@@ -56,7 +59,7 @@ module VagrantPlugins
           # Get the configs
           @provider_config = env[:machine].provider_config
           # Launch!
-          env[:ui].info(I18n.t("vagrant_qemu.launching_instance"))
+          env[:ui].info("vagrant_qemu.launching_instance")
 
 
           env[:ui].info(JSON.pretty_generate (env[:machine]))
@@ -64,12 +67,13 @@ module VagrantPlugins
 
 
           shell_command = prepare_shell_command(env)
-          output = `#{shell_command}`
-          if $?.to_i > 0
-            raise Errors::QemuError, :message => "Failure with command: #{shell_command}..."
-          end
-          
-          env[:machine].id = output.split(/\s+/)[0]
+
+          env[:machine].id = spawn(shell_command)
+
+          # output = `#{shell_command}`
+          ## if $?.to_i > 0
+          #  raise Errors::QemuError, :message => "Failure with command: #{shell_command}..."
+          #end
 
           # Wait for the instance to be ready first
           env[:metrics]["instance_ready_time"] = Util::Timer.time do
@@ -111,7 +115,7 @@ module VagrantPlugins
             @logger.info("Time for SSH ready: #{env[:metrics]["instance_ssh_time"]}")
 
             # Ready and booted!
-            env[:ui].info(I18n.t("vagrant_qemu.ready"))
+            env[:ui].info("vagrant_qemu.ready")
           end
 
           # Terminate the instance if we were interrupted
