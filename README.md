@@ -20,7 +20,7 @@ If `vagrant` is not installed yet, you should [install it](https://www.vagrantup
 
 ## Build and install
 ```
-rake build && vagrant plugin install pkg/vagrant-qemu-0.2.21.gem
+rake build && vagrant plugin install pkg/vagrant-qemu-0.2.22.gem
 ```
 
 ## Run a demo
