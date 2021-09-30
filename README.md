@@ -29,6 +29,6 @@ Below is to load and run an Ubuntu desktop, only tested on m1 macbook:
 ```shell
 vagrant init billyan2018/devbox \
   --box-version 0.1.0
-vagrant up --provider="qemu"
+vagrant up --provider="libvirt"
 ```
 
