@@ -43,18 +43,7 @@ module VagrantPlugins
         end
       end
 
-      # This action is called to SSH into the machine.
-      def self.action_ssh
-        Vagrant::Action::Builder.new.tap do |b|
 
-        end
-      end
-
-      def self.action_ssh_run
-        Vagrant::Action::Builder.new.tap do |b|
-
-        end
-      end
 
       # This action is called to bring the box up from nothing.
       def self.action_up
@@ -77,7 +66,6 @@ module VagrantPlugins
       autoload :IsCreated, action_root.join("is_created")
       autoload :MessageAlreadyCreated, action_root.join("message_already_created")
       autoload :MessageNotCreated, action_root.join("message_not_created")
-      # autoload :ReadSSHInfo, action_root.join("read_ssh_info")
       autoload :ReadState, action_root.join("read_state")
       autoload :RunInstance, action_root.join("run_instance")
       autoload :TimedProvision, action_root.join("timed_provision")
