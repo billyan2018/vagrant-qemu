@@ -4,5 +4,6 @@
 # Bundler/Rubygems
 /*.gem
 pkg/*
+./idea/*
 tags
 /.bundle
