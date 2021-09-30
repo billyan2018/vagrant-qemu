@@ -1,0 +1,46 @@
+en:
+  vagrant_qemu:
+    already_created: |-
+      The machine is already created.
+    launching_instance: |-
+      Launching an instance with the following settings...
+    not_created: |-
+      Instance is not created. Please run `vagrant up` first.
+    ready: |-
+      Machine is booted and ready for use!
+    terminating: |-
+      Terminating the instance...
+    waiting_for_ready: |-
+      Waiting for instance to become "ready"...
+    waiting_for_ssh: |-
+      Waiting for SSH to become available...
+
+    config:
+      image_required: |-
+        An Image must be configured via "image"
+      private_key_missing: |-
+        The specified private key for Qemu could not be found
+
+    errors:
+      qemu_error: |-
+        There was an error talking to Qemu. The error message is shown
+        below:
+
+        %{message}
+      instance_ready_timeout: |-
+        The instance never became "ready" in Qemu. The timeout currently
+        set waiting for the instance to become ready is %{timeout} seconds.
+        Please verify that the machine properly boots. If you need more time
+        set the `instance_ready_timeout` configuration on the Qemu provider.
+
+    states:
+      short_not_created: |-
+        not created
+      long_not_created: |-
+        The Qemu instance is not created. Run `vagrant up` to create it.
+
+      short_running: |-
+        running
+      long_running: |-
+        The Qemu instance is running. To stop this machine, you can run
+        `vagrant halt`. To destroy the machine, you can run `vagrant destroy`.

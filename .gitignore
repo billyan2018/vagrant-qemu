@@ -1,0 +1,8 @@
+# OS-specific
+.DS_Store
+
+# Bundler/Rubygems
+/*.gem
+pkg/*
+tags
+/.bundle

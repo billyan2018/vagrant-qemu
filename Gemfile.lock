@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    vagrant-qemu (0.2.21)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  vagrant-qemu!
+
+BUNDLED WITH
+   2.1.4

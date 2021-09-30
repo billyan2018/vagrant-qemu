@@ -1,0 +1,39 @@
+#!/bin/bash -efu
+
+function debug {
+  if [[ -n "${VAGRANT_LOG:-}" ]]; then
+    printf '[%s]: %s\n' "$(basename $0)" "$*" 1>&2
+  fi
+}
+
+if [[ -n "${VAGRANT_LOG:-}" ]]; then
+  set -x
+fi
+
+cmd="$1"; shift
+case "$cmd" in
+  run-instance)
+    image="$1"; shift
+    debug "run-instance $image"
+    debug "run-instance args: $* 1>&2"
+    echo "$image"
+    ;;
+  terminate-instance)
+    instance="$1"; shift
+    debug "terminate-instance $instance"
+    ;;
+  ssh-info)
+    instance="$1"; shift
+    debug "ssh-info $instance"
+    debug "ssh-info: 127.0.0.1 22"
+    echo "${instance} 22"
+    ;;
+  read-state)
+    instance="$1"; shift
+    debug "read-state $instance"
+    echo "running"
+    ;;
+  *)
+    exit 1
+    ;;
+esac

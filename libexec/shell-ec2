@@ -1,0 +1,36 @@
+#!/bin/bash -efu
+
+if [[ -n "${VAGRANT_LOG:-}" ]]; then
+  set -x
+fi
+
+: ${AWS_TYPE:=m1.large}
+: ${AWS_REGION:=us-east-1}
+: ${AWS_KEYPAIR:=default}
+: ${AWS_BLOCK:=/dev/sda1=:80}
+: ${AWS_SHUTDOWN:=terminate}
+: ${AWS_QUANTITY:=1}
+
+cmd="$1"; shift
+case "$cmd" in
+  run-instance)
+    image="$1"; shift
+    ec2-run-instances -t "$AWS_TYPE" --region "$AWS_REGION" -k "$AWS_KEYPAIR" -b "$AWS_BLOCK" --instance-initiated-shutdown-behavior "$AWS_SHUTDOWN" -n "$AWS_QUANTITY" "$image" | awk '$1 == "INSTANCE" { print $2 }'
+    ;;
+  terminate-instance)
+    instance="$1"; shift
+    ec2-terminate-instances "$instance"
+    ;;
+  ssh-info)
+    instance="$1"; shift
+    echo "$(ec2-describe-instances "$instance" | awk '$1 == "INSTANCE" && $6 == "running" { print $4 }')" 22
+    ;;
+  read-state)
+    instance="$1"; shift
+    ec2-describe-instances "$instance" | awk '$1 == "INSTANCE" { print $6 }'
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+
