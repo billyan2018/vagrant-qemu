@@ -5,6 +5,7 @@ require "vagrant/action/builder"
 module VagrantPlugins
   module Qemu
     module Action
+      @logger = Log4r::Logger.new("vagrant_qemu::action::base")
       # Include the built-in modules so we can use them as top-level things.
       include Vagrant::Action::Builtin
 
@@ -47,7 +48,22 @@ module VagrantPlugins
 
       # This action is called to bring the box up from nothing.
       def self.action_up
+        @logger.info("action_up")
         Vagrant::Action::Builder.new.tap do |b|
+          b.use ConfigValidate
+          b.use HandleBox
+          b.use BoxCheckOutdated
+          #b.use Call, IsCreated do |env, b2|
+          # Handle box_url downloading early so that if the Vagrantfile
+          # references any files in the box or something it all just
+          # works fine.
+          #b.use Call, IsState, :not_created do |env1, b1|
+          #  @logger.info(env1[:result])
+          #  if env1[:result]
+          #    b1.use HandleBox
+          #  end
+          #end
+
           b.use ConfigValidate
           b.use Call, IsCreated do |env, b2|
             if env[:result]

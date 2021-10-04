@@ -3,6 +3,12 @@ require "vagrant"
 module VagrantPlugins
   module Qemu
     class Config < Vagrant.plugin("2", :config)
+      attr_accessor :qemu_command
+      attr_accessor :machine
+      attr_accessor :cpu
+      attr_accessor :smp
+      attr_accessor :memory
+      attr_accessor :display
       # The disk_file to use.
       #
       # @return [String]

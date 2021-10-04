@@ -16,8 +16,8 @@ module VagrantPlugins
           @logger = Log4r::Logger.new("vagrant_qemu::action::run_instance")
         end
 
-        def disk_file
-          @provider_config.disk_file || "#{Dir.home}/.vagrant.d/boxes/arm/0/libvirt/box.img"
+        def disk_file(env)
+          @provider_config.disk_file || "#{env[:machine].box.directory}/box.img"
         end
 
         def firmware_location
@@ -25,21 +25,29 @@ module VagrantPlugins
         end
 
         def prepare_shell_command(env)
+          qemu_command = @provider_config.qemu_command || "qemu-system-aarch64"
+          machine = @provider_config.machine || "virt,accel=hvf,highmem=off"
+          cpu = @provider_config.cpu || "host"
+          memory = @provider_config.memory || "4G"
+          smp = @provider_config.smp || "2"
+          display = @provider_config.display || "cocoa,gl=es"
 
           firmware_path = firmware_location
           env[:ui].info("==Firmware: #{firmware_path}")
-          disk_file_location = self.disk_file
+          disk_file_location = self.disk_file(env)
           env[:ui].info("==Disk: #{disk_file_location}")
           %{
-          qemu-system-aarch64 \
-         -machine virt,accel=hvf,highmem=off \
-         -cpu cortex-a72 -smp 2 -m 4G \
+          #{qemu_command} \
+         -machine #{machine} \
+         -cpu #{cpu} \
+         -smp #{smp} \
+         -m #{memory} \
+         -display #{display} \
          -device intel-hda -device hda-output \
          -device qemu-xhci \
          -device virtio-gpu-gl-pci \
          -device usb-kbd \
          -device virtio-mouse-pci \
-         -display cocoa,gl=es \
 		     -device e1000,netdev=net0 \
 		     -netdev user,id=net0 \
          -drive "if=pflash,format=raw,file=#{firmware_path}/edk2-aarch64-code.fd,readonly=on" \
@@ -61,9 +69,10 @@ module VagrantPlugins
           # Launch!
           env[:ui].info("vagrant_qemu.launching_instance")
 
-
-          env[:ui].info(JSON.pretty_generate (env[:machine]))
-          env[:ui].info(JSON.pretty_generate(@provider_config))
+          env[:ui].info("aaaaaaa")
+          env[:ui].info(env[:machine].to_yaml)
+          env[:ui].info("-----------")
+          env[:ui].info(@provider_config.to_yaml())
 
 
           shell_command = prepare_shell_command(env)
