@@ -27,7 +27,7 @@ module VagrantPlugins
           else
             begin
               Process.getpgid( pid )
-              :created
+              :running
             rescue Errno::ESRCH
               :not_created
             end

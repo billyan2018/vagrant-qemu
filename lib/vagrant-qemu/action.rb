@@ -71,7 +71,7 @@ module VagrantPlugins
               next
             end
 
-            b2.use TimedProvision
+            # b2.use TimedProvision
             b2.use RunInstance
           end
         end
@@ -84,7 +84,7 @@ module VagrantPlugins
       autoload :MessageNotCreated, action_root.join("message_not_created")
       autoload :ReadState, action_root.join("read_state")
       autoload :RunInstance, action_root.join("run_instance")
-      autoload :TimedProvision, action_root.join("timed_provision")
+      # autoload :TimedProvision, action_root.join("timed_provision")
       autoload :TerminateInstance, action_root.join("terminate_instance")
     end
   end

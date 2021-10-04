@@ -67,69 +67,17 @@ module VagrantPlugins
           # Get the configs
           @provider_config = env[:machine].provider_config
           # Launch!
-          env[:ui].info("vagrant_qemu.launching_instance")
+          @logger.info("vagrant_qemu.launching_instance")
 
-          env[:ui].info("aaaaaaa")
-          env[:ui].info(env[:machine].to_yaml)
-          env[:ui].info("-----------")
-          env[:ui].info(@provider_config.to_yaml())
+          @logger.debug("aaaaaaa")
+          @logger.debug(env[:machine].to_yaml)
+          @logger.debug("-----------")
+          @logger.debug(@provider_config.to_yaml())
 
 
           shell_command = prepare_shell_command(env)
-
+          @logger.info("command:#{shell_command}")
           env[:machine].id = spawn(shell_command)
-
-          # output = `#{shell_command}`
-          ## if $?.to_i > 0
-          #  raise Errors::QemuError, :message => "Failure with command: #{shell_command}..."
-          #end
-
-          # Wait for the instance to be ready first
-          env[:metrics]["instance_ready_time"] = Util::Timer.time do
-            tries = @provider_config.instance_ready_timeout / 2
-
-            env[:ui].info("vagrant_qemu.waiting_for_ready")
-            begin
-              retryable(:on => Qemu::Errors::TimeoutError, :tries => tries) do
-                # If we're interrupted don't worry about waiting
-                next if env[:interrupted]
-
-                # Wait for the server to be ready
-                true
-              end
-            rescue Qemu::Errors::TimeoutError
-              # Delete the instance
-              terminate(env)
-
-              # Notify the user
-              raise Errors::InstanceReadyTimeout,
-                timeout: @provider_config.instance_ready_timeout
-            end
-          end
-
-          @logger.info("Time to instance ready: #{env[:metrics]["instance_ready_time"]}")
-
-          if !env[:interrupted]
-            env[:metrics]["instance_ssh_time"] = Util::Timer.time do
-              # Wait for SSH to be ready.
-              env[:ui].info("vagrant_qemu.waiting_for_ssh")
-              while true
-                # If we're interrupted then just back out
-                break if env[:interrupted]
-                break if env[:machine].communicate.ready?
-                sleep 2
-              end
-            end
-
-            @logger.info("Time for SSH ready: #{env[:metrics]["instance_ssh_time"]}")
-
-            # Ready and booted!
-            env[:ui].info("vagrant_qemu.ready")
-          end
-
-          # Terminate the instance if we were interrupted
-          terminate(env) if env[:interrupted]
-
           @app.call(env)
         end
 
