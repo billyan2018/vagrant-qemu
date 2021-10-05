@@ -61,7 +61,7 @@ Screen:
 
 Item | Description | Default value
 ----- | ------- | -------------
-qemu_command | the command to call qemu, like "qemu-system-aarch64" or "qemu-system-x86_64" | "qemu-system-aarch64"
+qemu_command | the command to call qemu, like `qemu-system-aarch64` or `qemu-system-x86_64` | "qemu-system-aarch64"
 machine |machine type, run `qemu-system-aarch64 -machine help` to see the types supported| "virt,accel=hvf,highmem=off"
 cpu |run `qemu-system-aarch64 -cpu help` to check CPU supported | "host"
 smp |Specify the number of cores the guest is permitted to use| "2"
@@ -70,3 +70,4 @@ display |Available display backend types: `qemu-system-aarch64 -display help`| "
 gpu ||"virtio-gpu-gl-pci"
 mouse |mouse type|"usb-tablet"
 firmware_location | The firmware to boot the machine | no value for x86, otherwise "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"
+additional_line |any content you would like to append at the end of the command| NA
