@@ -43,7 +43,7 @@ Screen:
 ```shell
 vagrant init failfish/precise64
 ```
-Then add this part in the `Vagrantfile`:
+Add this part in the `Vagrantfile`:
 ```ruby
   config.vm.provider :libvirt do |lv|
     lv.qemu_command = "qemu-system-x86_64" 
@@ -53,5 +53,20 @@ Then add this part in the `Vagrantfile`:
     lv.display="cocoa,gl=es"	
   end
 ```
+Then `vagrant up --provider="libvirt"`
 Screen:
 ![](images/x86.png)
+
+## Configuration items
+
+Item | Description | Default value
+----- | ------- | -------------
+qemu_command | the command to call qemu, like "qemu-system-aarch64" or "qemu-system-x86_64" | "qemu-system-aarch64"
+machine |machine type, run `qemu-system-aarch64 -machine help` to see the types supported| "virt,accel=hvf,highmem=off"
+cpu |run `qemu-system-aarch64 -cpu help` to check CPU supported | "host"
+smp |Specify the number of cores the guest is permitted to use| "2"
+memory | Memory size| "4G"
+display |Available display backend types: `qemu-system-aarch64 -display help`| "cocoa,gl=es"
+gpu ||"virtio-gpu-gl-pci"
+mouse |mouse type|"usb-tablet"
+firmware_location | The firmware to boot the machine | no value for x86, otherwise "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"
