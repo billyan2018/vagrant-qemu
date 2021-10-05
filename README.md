@@ -27,12 +27,31 @@ If `vagrant` is not installed yet, you should [install it](https://www.vagrantup
 rake build && vagrant plugin install pkg/vagrant-qemu-0.2.22.gem
 ```
 
-## Run a demo
+## Demo
+### Run an ARM64 VM
 
-Below is to load and run an Ubuntu desktop, only tested on m1 macbook:
 ```shell
 vagrant init billyan2018/devbox \
   --box-version 0.1.0
 vagrant up --provider="libvirt"
 ```
+Screen:
+![](images/arm64.png)
 
+### Run an AMD64 VM
+
+```shell
+vagrant init failfish/precise64
+```
+Then add this part in the `Vagrantfile`:
+```ruby
+  config.vm.provider :libvirt do |lv|
+    lv.qemu_command = "qemu-system-x86_64" 
+    lv.machine = "q35"
+    lv.cpu = "max"
+    lv.memory = "4G"
+    lv.display="cocoa,gl=es"	
+  end
+```
+Screen:
+![](images/x86.png)

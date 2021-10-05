@@ -9,6 +9,9 @@ module VagrantPlugins
       attr_accessor :smp
       attr_accessor :memory
       attr_accessor :display
+      attr_accessor :gpu
+      attr_accessor :mouse
+      attr_accessor :additional_line
       # The disk_file to use.
       #
       # @return [String]

@@ -16,48 +16,39 @@ module VagrantPlugins
           @logger = Log4r::Logger.new("vagrant_qemu::action::run_instance")
         end
 
-        def disk_file(env)
-          @provider_config.disk_file || "#{env[:machine].box.directory}/box.img"
-        end
-
-        def firmware_location
-          @provider_config.firmware_location || "/opt/homebrew/share/qemu"
-        end
 
         def prepare_shell_command(env)
           qemu_command = @provider_config.qemu_command || "qemu-system-aarch64"
-          machine = @provider_config.machine || "virt,accel=hvf,highmem=off"
-          cpu = @provider_config.cpu || "host"
-          memory = @provider_config.memory || "4G"
-          smp = @provider_config.smp || "2"
-          display = @provider_config.display || "cocoa,gl=es"
 
-          firmware_path = firmware_location
-          env[:ui].info("==Firmware: #{firmware_path}")
-          disk_file_location = self.disk_file(env)
+          disk_file_location = @provider_config.disk_file || "#{env[:machine].box.directory}/box.img"
           env[:ui].info("==Disk: #{disk_file_location}")
-          %{
+          command = %{
           #{qemu_command} \
-         -machine #{machine} \
-         -cpu #{cpu} \
-         -smp #{smp} \
-         -m #{memory} \
-         -display #{display} \
+         -machine #{@provider_config.machine || "virt,accel=hvf,highmem=off"} \
+         -cpu #{@provider_config.cpu || "host"} \
+         -smp #{@provider_config.smp || "2"} \
+         -m #{@provider_config.memory || "4G"} \
+         -display #{@provider_config.display || "cocoa,gl=es"} \
          -device intel-hda -device hda-output \
          -device qemu-xhci \
-         -device virtio-gpu-gl-pci \
+         -device #{@provider_config.gpu ||"virtio-gpu-gl-pci"} \
          -device usb-kbd \
-         -device virtio-mouse-pci \
+         -device #{@provider_config.mouse ||"usb-tablet"} \
 		     -device e1000,netdev=net0 \
 		     -netdev user,id=net0 \
-         -drive "if=pflash,format=raw,file=#{firmware_path}/edk2-aarch64-code.fd,readonly=on" \
-         -drive "if=pflash,format=raw,file=#{firmware_path}/edk2-arm-vars.fd,discard=on" \
          -drive "if=virtio,format=qcow2,file=#{disk_file_location},discard=on" \
 		     -chardev qemu-vdagent,id=spice,name=vdagent,clipboard=on \
 		     -device virtio-serial-pci \
-		     -device virtserialport,chardev=spice,name=com.redhat.spice.0
-          }
-
+		     -device virtserialport,chardev=spice,name=com.redhat.spice.0 }
+          if @provider_config.firmware_location != nil || !(qemu_command.include?("x86_64"))
+            firmware_path = @provider_config.firmware_location || "/opt/homebrew/share/qemu/edk2-aarch64-code.fd"
+            env[:ui].info("==Firmware: #{firmware_path}")
+            command = "#{command} -drive \"if=pflash,format=raw,file=#{firmware_path},readonly=on\""
+          end
+          if @provider_config.additional_line != nil
+            command = "#{command} #{@provider_config.additional_line}"
+          end
+          command
         end
 
         def call(env)
@@ -76,7 +67,7 @@ module VagrantPlugins
 
 
           shell_command = prepare_shell_command(env)
-          @logger.info("command:#{shell_command}")
+          env[:ui].info("command:\n#{shell_command}")
           env[:machine].id = spawn(shell_command)
           @app.call(env)
         end
