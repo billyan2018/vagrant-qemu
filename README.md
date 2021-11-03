@@ -17,7 +17,11 @@ to enable graphical acceleration:
 brew install knazarov/qemu-virgl/qemu-virgl
 ```
 
-If `vagrant` is not installed yet, you should [install it](https://www.vagrantup.com)
+If `vagrant` is not installed yet, you should [install it](https://www.vagrantup.com): 
+
+```
+brew install vagrant
+```
 
 ## Build and install
 ```
@@ -32,6 +36,7 @@ vagrant init billyan2018/devbox \
   --box-version 0.1.0
 vagrant up --provider="libvirt"
 ```
+as convention, the username/password are both `vagrant`
 Screen:
 ![](images/arm64.png)
 
