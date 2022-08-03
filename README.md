@@ -22,8 +22,14 @@ If `vagrant` is not installed yet, you should [install it](https://www.vagrantup
 ```
 brew install vagrant
 ```
+If any troubles met for vagrant installation, check [other options](https://www.vagrantup.com)
 
 ## Build and install
+Clone this repo:
+```
+git clone https://github.com/billyan2018/vagrant-qemu
+```
+Then build and install
 ```
 rake build && vagrant plugin install pkg/vagrant-qemu-0.2.22.gem
 ```
