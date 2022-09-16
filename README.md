@@ -11,10 +11,10 @@ If qemu is not installed yet,
 brew install qemu
 ```
 
-It is optional, but we strongly suggest installing [qemu-virgl](https://github.com/knazarov/homebrew-qemu-virgl)
+It is optional, but we strongly suggest installing [qemu-virgl](https://github.com/akirakyle/homebrew-qemu-virgl)
 to enable graphical acceleration:
 ```
-brew install knazarov/qemu-virgl/qemu-virgl
+brew install akirakyle/qemu-virgl/qemu-virgl
 ```
 
 If `vagrant` is not installed yet, you should [install it](https://www.vagrantup.com): 
